@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.app {
+  color: skyblue;
+  background-image: url('./MC20.jpg');
+}
+
