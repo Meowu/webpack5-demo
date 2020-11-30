@@ -2,7 +2,7 @@ const { mode } = require("webpack-nano/argv");
 const { merge } = require("webpack-merge");
 const parts = require("./webpack.parts");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const path = require('path');
+const path = require("path");
 
 // 如果我们不想通过 JS 处理 css，也可以在打包入口处这样去配置，需要注意的是 css 样式的顺序。
 // const glob = require("glob");
@@ -15,21 +15,31 @@ const path = require('path');
 
 const cssLoaders = [parts.autoprefix(), parts.tailind()];
 const defaultPlugins = {
-  plugins: [
-    new CleanWebpackPlugin(),
-  ]
-}
+  plugins: [new CleanWebpackPlugin()],
+};
 
 const commonConfig = merge([
   {
     entry: ["./src"],
+    /**
+     * 像下面这样定义可以得到跟定义 optimization.splitChunks 同样的效果。
+     */
+    // entry: {
+    //   // app: './src',
+    //   // 定义多入口
+    //   app: {
+    //     import: './src',
+    //     dependOn: 'vendors', // 依赖的包，那么 vendors 必须作为一个打包入口，app.js 不会再把 vendors 打包进来。
+    //   },
+    //   vendors: ['react', 'react-dom'], // 独立的包，可以被其它包所依赖。
+    // },
     output: {
-      path: path.resolve(process.cwd(), 'dist'), // 配置这里，不需要再配置 clean-webpack-plugin 的 options.output.path;
+      path: path.resolve(process.cwd(), "dist"), // 配置这里，不需要再配置 clean-webpack-plugin 的 options.output.path;
       publicPath: "", // 需要设置这个，MiniCssExtractPlugin 处理图片的时候才不会报错。
     },
     optimization: {
-      moduleIds: 'named',
-    }
+      moduleIds: "named",
+    },
   },
   parts.page({ title: "Demo" }),
   parts.extractCSS({ loaders: cssLoaders }),
@@ -39,7 +49,18 @@ const commonConfig = merge([
   parts.loadJavaScript(),
 ]);
 
-const productionConfig = merge([parts.eliminateUnusedCSS(), parts.generateSourceMaps({ type: 'cheap-source-map' }), defaultPlugins]);
+const productionConfig = merge([
+  parts.eliminateUnusedCSS(),
+  parts.generateSourceMaps({ type: "cheap-source-map" }),
+  defaultPlugins,
+  {
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+      }
+    }
+  }
+]);
 
 const developmentConfig = merge([
   { entry: ["webpack-plugin-serve/client"] },
@@ -54,7 +75,7 @@ const getConfig = (mode) => {
       return merge(commonConfig, developmentConfig, { mode });
     default:
       return merge(commonConfig, productionConfig, { mode });
-      // throw new Error(`Trying to use an unknown mode: ${mode}.`);
+    // throw new Error(`Trying to use an unknown mode: ${mode}.`);
   }
 };
 
