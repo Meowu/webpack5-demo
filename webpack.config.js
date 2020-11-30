@@ -1,7 +1,6 @@
 const { mode } = require("webpack-nano/argv");
 const { merge } = require("webpack-merge");
 const parts = require("./webpack.parts");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const path = require("path");
 
 // 如果我们不想通过 JS 处理 css，也可以在打包入口处这样去配置，需要注意的是 css 样式的顺序。
@@ -14,9 +13,6 @@ const path = require("path");
 // ])
 
 const cssLoaders = [parts.autoprefix(), parts.tailind()];
-const defaultPlugins = {
-  plugins: [new CleanWebpackPlugin()],
-};
 
 const commonConfig = merge([
   {
@@ -41,6 +37,7 @@ const commonConfig = merge([
       moduleIds: "named",
     },
   },
+  parts.clean(),
   parts.page({ title: "Demo" }),
   parts.extractCSS({ loaders: cssLoaders }),
   // parts.loadCSS(),
@@ -52,14 +49,14 @@ const commonConfig = merge([
 const productionConfig = merge([
   parts.eliminateUnusedCSS(),
   parts.generateSourceMaps({ type: "cheap-source-map" }),
-  defaultPlugins,
   {
     optimization: {
       splitChunks: {
-        chunks: 'all',
+        chunks: 'all', // 发现每次 react 相关都公共包都输出 471.js ，471 是基于什么来生成的。
       }
     }
-  }
+  },
+  parts.attachRevision(),
 ]);
 
 const developmentConfig = merge([
