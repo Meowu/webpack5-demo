@@ -4,6 +4,8 @@ const { MiniHtmlWebpackPlugin } = require('mini-html-webpack-plugin');
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const CSSMinimizer = require('css-minimizer-webpack-plugin');
 const path = require('path');
 const glob = require('glob');
 const PurgeCSSPlugin = require('purgecss-webpack-plugin');
@@ -68,7 +70,8 @@ exports.extractCSS = ({ options = { }, loaders = [] } = {}) => {
     },
     plugins: [
       new MiniCssExtractPlugin({
-        filename: '[name].css', // or emit to specific directory: style/[name].css
+        // filename: '[name].css', // or emit to specific directory: style/[name].css
+        filename: '[name].[contenthash].css',
       })
     ]
   }
@@ -142,4 +145,27 @@ exports.attachRevision = () => ({
       banner: new GitRevisionPlugin().version(),
     })
   ]
+});
+
+exports.minifyJavaScript = () => ({
+  optimization: {
+    minimizer: [new TerserPlugin()],
+  }
 })
+
+exports.minifyCSS = ({ options }) => ({
+  optimization: {
+    minimizer: [new CSSMinimizer({ minimizerOptions: options })]
+  }
+})
+
+exports.setFreeVariables = (key, value) => {
+  const env = {};
+  env[key] = JSON.stringify(value); // 由于 webpack 的文本替换机制，需要将其序列化。
+
+  return {
+    plugins: [
+      new webpack.DefinePlugin(env),
+    ]
+  }
+}

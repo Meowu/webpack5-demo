@@ -44,9 +44,17 @@ const commonConfig = merge([
   parts.loadSASS(),
   parts.loadImages(15000),
   parts.loadJavaScript(),
+  parts.setFreeVariables('HELLO', 'hello from config.'),
 ]);
 
 const productionConfig = merge([
+  {
+    output: {
+      chunkFilename: '[name].[contenthash].js',
+      filename: '[name].[contenthash].js',
+      assetModuleFilename: '[name].[contenthash][ext][query]',
+    }
+  },
   parts.eliminateUnusedCSS(),
   parts.generateSourceMaps({ type: "cheap-source-map" }),
   {
@@ -56,7 +64,16 @@ const productionConfig = merge([
       }
     }
   },
+  {
+    stats: {
+      usedExports: true,
+    }
+  },
   parts.attachRevision(),
+  parts.minifyJavaScript(),
+  parts.minifyCSS({ options: {
+    preset: ['default']
+  }}),
 ]);
 
 const developmentConfig = merge([

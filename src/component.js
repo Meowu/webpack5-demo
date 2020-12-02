@@ -1,4 +1,4 @@
-export default (text = "Hello world.") => {
+export default (text = HELLO) => {
   console.info('trace.')
   const element = document.createElement("div");
   element.innerHTML = text;
