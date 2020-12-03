@@ -1,0 +1,43 @@
+{
+  "chunks": {
+    "byName": {
+      "main": 179,
+      "runtime": 666
+    },
+    "bySource": {
+      "0 ./node_modules/babel-loader/lib/index.js!./src/component.js ./lazy": 34,
+      "0 main": 666,
+      "1 main": 840,
+      "2 main": 179
+    },
+    "usedIds": [
+      34,
+      179,
+      666,
+      840
+    ]
+  },
+  "mini-css-extract-plugin /Users/joi/Codebase/webpack-demo/node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[0].oneOf[1].use[2]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[0].oneOf[1].use[3]!./src/index.css": [
+    {
+      "chunks": {
+        "byName": {
+          "mini-css-extract-plugin": 323
+        },
+        "bySource": {
+          "0 mini-css-extract-plugin": 323
+        },
+        "usedIds": [
+          323
+        ]
+      },
+      "modules": {
+        "byIdentifier": {},
+        "usedIds": []
+      }
+    }
+  ],
+  "modules": {
+    "byIdentifier": {},
+    "usedIds": []
+  }
+}

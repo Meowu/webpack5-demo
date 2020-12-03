@@ -61,6 +61,9 @@ const productionConfig = merge([
     optimization: {
       splitChunks: {
         chunks: 'all', // 发现每次 react 相关都公共包都输出 471.js ，471 是基于什么来生成的。
+      },
+      runtimeChunk: {
+        name: 'runtime',
       }
     }
   },
@@ -74,6 +77,9 @@ const productionConfig = merge([
   parts.minifyCSS({ options: {
     preset: ['default']
   }}),
+  // {
+  //   recordsPath: path.join(__dirname, 'records.json'),
+  // }
 ]);
 
 const developmentConfig = merge([
